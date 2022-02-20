@@ -1,10 +1,14 @@
 version: '3.8'
 
+volumes:
+  keycloakdb-data:
+    driver: local
+
 services:
   keycloakdb: # Service name 
     image: postgres:11
     volumes:
-      - ./keycloak-db/postgres-data:/var/lib/postgresql/data
+      - keycloakdb-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
@@ -13,6 +17,10 @@ services:
       - 5433:5432
   keycloak:
     image: jboss/keycloak:latest
+    volumes:
+      - ./imports/keycloak:/opt/jboss/keycloak/imports
+    command: 
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: keycloakdb # <<< This is the address, change it to your external db ip/domain
