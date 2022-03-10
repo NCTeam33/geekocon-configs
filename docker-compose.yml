@@ -20,7 +20,7 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: geekocon
+      POSTGRES_PASSWORD: password
       POSTGRES_USER: geekocon
       POSTGRES_DB: geekocon
     volumes:
