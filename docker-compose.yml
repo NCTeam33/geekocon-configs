@@ -3,11 +3,12 @@ version: '3.8'
 volumes:
   postgres-data:
     driver: local
+  pgadmin-data:
   keycloakdb-data:
     driver: local
 
 services:
-  keycloakdb: # Service name 
+  keycloakdb:
     image: postgres:11
     volumes:
       - keycloakdb-data:/var/lib/postgresql/data
@@ -16,7 +17,7 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
     ports:
-      - 5433:5433
+      - "5432:5433"
   postgres:
     image: postgres
     environment:
@@ -26,7 +27,19 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5433:5432"
+  pgadmin:
+    image: dpage/pgadmin4:4.18
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 81
+    ports:
+      - "8082:81"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgsql-server"
   keycloak:
     image: jboss/keycloak:latest
     volumes:
@@ -45,7 +58,7 @@ services:
       KEYCLOAK_LOGLEVEL: DEBUG
       ROOT_LOGLEVEL: DEBUG
     ports:
-      - 8080:8080
-      - 8443:8443
+      - "8080:8080"
+      - "8443:8443"
     depends_on:
       - keycloakdb
