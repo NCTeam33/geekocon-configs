@@ -43,9 +43,12 @@ services:
   keycloak:
     image: jboss/keycloak:latest
     volumes:
-      - ./imports/keycloak:/opt/jboss/keycloak/imports
-    command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+      - ./imports/startup-scripts/disable-theme-cache.cli:/opt/jboss/startup-scripts/disable-theme-cache.cli
+      - ./imports/keycloak/realm/realm-export.json:/opt/jboss/keycloak/imports/realm/realm-export.json
+      - ./imports/keycloak/standalone/deployments/://opt/jboss/keycloak/standalone/deployments/
+      - ./imports/keycloak/themes/ck-theme/login://opt/jboss/keycloak/themes/ck-theme/login
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm/realm-export.json"
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: keycloakdb # <<< This is the address, change it to your external db ip/domain
