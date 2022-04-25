@@ -1,12 +1,10 @@
 version: '3.8'
-
 volumes:
   postgres-data:
     driver: local
   pgadmin-data:
   keycloakdb-data:
     driver: local
-
 services:
   keycloakdb:
     image: postgres:11
@@ -38,8 +36,6 @@ services:
       - "8082:81"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
-    links:
-      - "db:pgsql-server"
   keycloak:
     image: jboss/keycloak:latest
     volumes:
